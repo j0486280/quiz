@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
     int i = 0;
     char line[MAX_INPUT_SIZE];
     struct timespec start, end;
-    double cpu_time;
+    double cpu_time=0;
     char *argu[LISTNODE_MAX_LENGTH];
     struct TreeNode *head;
     int inputarray_len;
@@ -120,8 +120,6 @@ int main(int argc, char *argv[])
         printf("cannot open the file\n");
         return -1;
     }
-
-    clock_gettime(CLOCK_REALTIME, &start);
 
     while (fgets(line, sizeof(line), fp)) {
         while (line[i] != '\0')
@@ -133,14 +131,14 @@ int main(int argc, char *argv[])
         inputarray_len = getIntArray(line,argu);
         assert( inputarray_len < LISTNODE_MAX_LENGTH && "Array length overflow !!!");
         head = buildTreeNode(argu,inputarray_len);
+        clock_gettime(CLOCK_REALTIME, &start);
         flatten(head);
+        clock_gettime(CLOCK_REALTIME, &end);
+        cpu_time += diff_in_second(start, end);
         printf("answer : ");
         printTreeNode(head);
     }
 
-    clock_gettime(CLOCK_REALTIME, &end);
-
-    cpu_time = diff_in_second(start, end);
     printf("execution time : %lf sec\n", cpu_time);
 
     return 0;
